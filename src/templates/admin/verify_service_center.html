@@ -1,0 +1,41 @@
+{% extends "Admin/admin_index.html"%}
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Verify charging station</title>
+</head>
+<body>
+ <table width="500" border="2" class="table table-hover table-striped">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Address</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone</th>
+      <th scope="col">&nbsp;</th>
+    </tr>
+        {% for i in val %}
+
+    <tr>
+      <td>{{i['name']}}</td>
+      <td>
+
+       {{i['address']}}
+
+      </td>
+      <td>{{i['email']}}</td>
+      <td>{{i['phone']}}</td>
+      <td>
+
+        <p><a href="accept_center?id={{i['lid']}}">Accept</a></p>
+
+      <p><a href="reject_center?id={{i['lid']}}">Reject</a></p>
+
+      </td>
+    </tr>
+
+    {% endfor %}
+
+  </table>
+</body>
+<!--</html>-->
+{% endblock %}
