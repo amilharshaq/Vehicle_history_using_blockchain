@@ -1,0 +1,150 @@
+{% extends "admin/admin_index.html" %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Charging Stations</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .search-form input[type="text"] {
+            width: 400px;
+            margin-right: 15px;
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .search-form input[type="text"]:focus {
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .search-form .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .search-form .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .result-card {
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            padding: 40px;
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-card h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .result-card h2::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background-color: #007bff;
+            display: block;
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .result-card p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-card p strong {
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .result-card p i {
+            font-size: 1.2rem;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+        .no-result {
+            margin: 50px auto;
+            text-align: center;
+            color: #ff0000;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="post" action="view_history2">
+            <div class="search-form">
+                <input type="text" name="textfield" class="form-control" placeholder="Enter the vehicle registration number">
+                <input type="submit" value="Search" class="btn btn-primary">
+            </div>
+        </form>
+
+        <div class="row">
+            {% if val %}
+                <div class="col-12">
+                    <div class="result-card">
+                        <h2>Service History</h2>
+                        <p><i class="fas fa-user-circle"></i> <strong>Username:</strong> {{ val['name'] }}</p>
+                        <p><i class="fas fa-info-circle"></i> <strong>Details:</strong> {{ val['details'] }}</p>
+                        <p><i class="fas fa-dollar-sign"></i> <strong>Cost:</strong> {{ val['cost'] }}</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> {{ val['date'] }}</p>
+                        <p><i class="fas fa-cogs"></i> <strong>Service Type:</strong> {{ val['service_type'] }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="no-result">
+                        No records found for the given registration number.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+{% endblock %}
