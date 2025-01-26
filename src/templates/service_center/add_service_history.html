@@ -1,0 +1,45 @@
+{% extends "service_center/service_center_index.html"%}
+{% block body %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Service History</title>
+
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Add Service History</h2>
+        <form action="/add_service_history" method="POST" class="p-3 border rounded">
+            <!-- Booking Selection -->
+            <div class="mb-3">
+                <label for="booking_id" class="form-label">Select Booking</label>
+                <select name="booking_id" id="booking_id" class="form-select" required>
+                    <option value="" disabled selected>Select a booking</option>
+                    {% for booking in bookings %}
+                    <option value="{{ booking['id'] }}">
+                        {{ booking['name'] }} - Vehicle: {{ booking['vehicle_reg_no'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Maintenance Details -->
+            <div class="mb-3">
+                <label for="details" class="form-label">Maintenance Details</label>
+                <textarea name="details" id="details" rows="4" class="form-control" placeholder="Enter maintenance details" required></textarea>
+            </div>
+
+            <!-- Cost -->
+            <div class="mb-3">
+                <label for="cost" class="form-label">Cost</label>
+                <input type="number" name="cost" id="cost" class="form-control" placeholder="Enter cost" step="0.01" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100">Add Maintenance</button>
+        </form>
+    </div>
+</body>
+
+{% endblock %}

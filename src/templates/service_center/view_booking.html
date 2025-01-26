@@ -1,41 +1,80 @@
-{% extends "Admin/admin_index.html"%}
+{% extends "service_center/service_center_index.html"%}
 {% block body %}
 <head>
     <meta charset="UTF-8">
-    <title>Verify charging station</title>
+    <title>Verify Charging Station</title>
+    <!-- Link to Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJwQ3RlP2p68x+KnujsH5IsnLw7Gi5bH3B1Afn6tYm6F6iZp0fXz2C6KH27g" crossorigin="anonymous">
+    <style>
+        /* Custom table styles */
+        table {
+            margin-top: 20px;
+        }
+        .table thead {
+            background-color: #007BFF;
+            color: white;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn-accept {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
- <table width="500" border="2" class="table table-hover table-striped">
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Address</th>
-      <th scope="col">Email</th>
-      <th scope="col">Phone</th>
-      <th scope="col">&nbsp;</th>
-    </tr>
-        {% for i in val %}
+    <div class="container mt-4">
+        <h2 class="text-center"> Service Booking Requests</h2>
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Service Type</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">Vehicle Type</th>
+                    <th scope="col">Vehicle Registration Number</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in val %}
+                <tr>
+                    <td>{{ i['name'] }}</td>
+                    <td>{{ i['email'] }}</td>
+                    <td>{{ i['phone'] }}</td>
+                    <td>{{ i['service_type'] }}</td>
+                    <td>{{ i['details'] }}</td>
+                    <td>{{ i['vehicle_type'] }}</td>
+                    <td>{{ i['vehicle_reg_no'] }}</td>
+                    <td>{{ i['date'] }}</td>
+                    <td>
+                        <a href="accept_booking?id={{i['lid']}}" class="btn btn-accept">Accept</a>
+                        <a href="reject_booking?id={{i['lid']}}" class="btn btn-reject">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <tr>
-      <td>{{i['name']}}</td>
-      <td>
-
-       {{i['address']}}
-
-      </td>
-      <td>{{i['email']}}</td>
-      <td>{{i['phone']}}</td>
-      <td>
-
-        <p><a href="accept_center?id={{i['lid']}}">Accept</a></p>
-
-      <p><a href="reject_center?id={{i['lid']}}">Reject</a></p>
-
-      </td>
-    </tr>
-
-    {% endfor %}
-
-  </table>
+    <!-- Link to Bootstrap JS for responsiveness and interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybYl2tS9KnfvvM5BxBxT+K34FfZ+JvE6v6FpbbrT/9pTr6vLo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0f4x1UJk2TeKx16j7R8M9G/ZVdeZ7DmfFfXfzzm8Pp5xVdZo" crossorigin="anonymous"></script>
 </body>
-<!--</html>-->
 {% endblock %}
