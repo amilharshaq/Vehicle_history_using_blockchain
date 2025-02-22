@@ -281,12 +281,70 @@ def view_service_history3():
     return render_template("service_center/view_history.html")
 
 
+
+
+
+
+def view_history(reg_no):
+
+
+    try:
+        print("Loading contract ABI...")
+        with open(r"D:\blockchain\node_modules\.bin\build\contracts\VehicleHistory.json") as file:
+            contract_json = json.load(file)
+            contract_abi = contract_json['abi']
+
+        contract = web3.eth.contract(address='0x32184435B76004211EA806A324945C2aC39Da478', abi=contract_abi)
+        blocknumber = web3.eth.get_block_number()
+        mdata = []
+
+        print("Current Block Number:", blocknumber)
+
+        for i in range(blocknumber, 3, -1):
+            print(f"Processing Block {i}...")
+
+            try:
+                a = web3.eth.get_transaction_by_block(i, 0)
+                decoded_input = contract.decode_function_input(a['input'])
+
+                # if decoded_input[1]['bid'].split("#")[1] == event_name:
+
+                if decoded_input[1]['reg_no'] == reg_no:
+                    data = {
+                        'details': str(decoded_input[1]['details']),
+                        'cost': str(decoded_input[1]['cost']),
+                        'date': str(decoded_input[1]['date']),
+                    }
+                    mdata.append(data)
+                    print(f"Updated data list: {mdata}")
+
+            except Exception as e:
+                print(f"Error Processing Block {i}: {e}")
+                pass
+
+    except Exception as e:
+        print(f"Error with contract ABI or interaction: {e}")
+
+    print("Final Collected Data:", mdata)
+
+    return mdata  # Return data as a normal list, not as JSON
+
+
+
+
+
 @app.route("/view_history4", methods=['post'])
 def view_history4():
     reg_no = request.form['textfield']
-    qry = "SELECT `user`.name, `booking`.`vehicle_reg_no`,`service_type`,`vehicle_type`, `service_history`.* FROM `service_history` JOIN `booking` ON `service_history`.bid=`booking`.id JOIN `user`ON `booking`.lid=`user`.lid WHERE `booking`.`vehicle_reg_no`=%s"
-    res = selectone(qry, reg_no)
-    return render_template("service_center/view_history.html", val=res)
+
+    res = view_history(reg_no)
+
+    print(res,"======")
+
+    # qry = "SELECT `user`.name, `booking`.`vehicle_reg_no`,`service_type`,`vehicle_type`, `service_history`.* FROM `service_history` JOIN `booking` ON `service_history`.bid=`booking`.id JOIN `user`ON `booking`.lid=`user`.lid WHERE `booking`.`vehicle_reg_no`=%s"
+    # res = selectone(qry, reg_no)
+
+    return render_template("service_center/view_history.html", val=res[0])
 
 
 @app.route("/user_home")

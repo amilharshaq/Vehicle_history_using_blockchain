@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Center Registration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .form-container h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            color: #343a40;
+        }
+        .form-container .form-control {
+            border-radius: 8px;
+        }
+        .form-container .btn-primary {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .form-container label {
+            font-weight: 600;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Service Center Registration</h2>
+        <form id="form1" name="form1" method="post" action="service_center_register_code">
+            <div class="mb-3">
+                <label for="textfield" class="form-label">Name</label>
+                <input type="text" class="form-control" name="textfield" id="textfield" required pattern="[A-Z a-z.]{3,25}" placeholder="Enter your name">
+            </div>
+            <div class="mb-3">
+                <label for="textfield2" class="form-label">Address</label>
+                <input type="text" class="form-control" name="textfield2" id="textfield2" required placeholder="Enter your address">
+            </div>
+            <div class="mb-3">
+                <label for="textfield5" class="form-label">Email</label>
+                <input type="email" class="form-control" name="textfield5" id="textfield5" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}" placeholder="Enter your email">
+            </div>
+            <div class="mb-3">
+                <label for="textfield6" class="form-label">Phone</label>
+                <input type="text" class="form-control" name="textfield6" id="textfield6" required pattern="[6789][0-9]{9}" placeholder="Enter your phone number">
+            </div>
+            <div class="mb-3">
+                <label for="textfield7" class="form-label">Username</label>
+                <input type="text" class="form-control" name="textfield7" id="textfield7" required placeholder="Choose a username">
+            </div>
+            <div class="mb-3">
+                <label for="textfield8" class="form-label">Password</label>
+                <input type="password" class="form-control" name="textfield8" id="textfield8" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" placeholder="Enter a secure password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
