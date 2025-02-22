@@ -232,6 +232,36 @@ def add_service_history():
         details = request.form['details']
         cost = request.form['cost']
 
+        qry = "SELECT `vehicle_reg_no` FROM `booking` WHERE `id`=%s"
+        res = selectone(qry, booking_id)
+
+        reg_no = res['vehicle_reg_no']
+
+
+
+
+
+        with open(compiled_contract_path) as file:
+            contract_json = json.load(file)  # load contract info as JSON
+            contract_abi = contract_json['abi']  # fetch contract's abi - necessary to call its functions
+        contract = web3.eth.contract(address=deployed_contract_address, abi=contract_abi)
+
+        try:
+
+            blocknumber = web3.eth.get_block_number()
+            message2 = contract.functions.add_history(blocknumber + 1, str(reg_no), details,
+                                                 cost, "12"
+                                                 ).transact({'from': web3.eth.accounts[0]})
+
+            print(message2)
+
+
+        except Exception as e:
+            print("==================")
+            print("==================")
+            print("==================")
+            print(str(e))
+
         # Insert service history into the database
         qry = "INSERT INTO service_history VALUES(null, %s, %s, %s, curdate())"
         iud(qry, (booking_id, details, cost))
