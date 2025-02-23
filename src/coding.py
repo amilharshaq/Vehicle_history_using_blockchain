@@ -352,10 +352,6 @@ def user_home():
     return render_template("user/user_index.html")
 
 
-@app.route("/add_blockchain")
-def add_blockchain():
-    return "ok"
-
 
 app.run(debug=True)
 
