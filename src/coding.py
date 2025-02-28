@@ -351,7 +351,7 @@ def view_history4():
 def user_home():
     return render_template("user/user_index.html")
 
-kjaggajgfjhQGF
+
 
 
 app.run(debug=True)
