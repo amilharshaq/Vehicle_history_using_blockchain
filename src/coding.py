@@ -339,7 +339,6 @@ def view_history4():
 
     res = view_history(reg_no)
 
-    print(res,"======")
 
     # qry = "SELECT `user`.name, `booking`.`vehicle_reg_no`,`service_type`,`vehicle_type`, `service_history`.* FROM `service_history` JOIN `booking` ON `service_history`.bid=`booking`.id JOIN `user`ON `booking`.lid=`user`.lid WHERE `booking`.`vehicle_reg_no`=%s"
     # res = selectone(qry, reg_no)
