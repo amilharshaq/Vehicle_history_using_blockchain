@@ -331,8 +331,6 @@ def view_history(reg_no):
 
 
 
-
-
 @app.route("/view_history4", methods=['post'])
 def view_history4():
     reg_no = request.form['textfield']
@@ -343,7 +341,7 @@ def view_history4():
     # qry = "SELECT `user`.name, `booking`.`vehicle_reg_no`,`service_type`,`vehicle_type`, `service_history`.* FROM `service_history` JOIN `booking` ON `service_history`.bid=`booking`.id JOIN `user`ON `booking`.lid=`user`.lid WHERE `booking`.`vehicle_reg_no`=%s"
     # res = selectone(qry, reg_no)
 
-    return render_template("service_center/view_history.html", val=res[0])
+    return render_template("service_center/view_history.html", val=res)
 
 
 @app.route("/user_home")
