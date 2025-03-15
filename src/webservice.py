@@ -37,4 +37,112 @@ def login():
         return jsonify({"task":"valid", "id":res['id']} )
 
 
+
+
+@app.route('/user_register_code', methods=['post'])
+def user_register_code():
+
+    try:
+
+        print(request.form)
+
+        name = request.form['textfield']
+        address = request.form['textfield2']
+
+        email = request.form['textfield5']
+        contact = request.form['textfield6']
+
+        uname = request.form['textfield7']
+        pswd = request.form['textfield8']
+
+        qry = "select * from user where email=%s"
+        res = selectone(qry, email)
+
+        if res is not None:
+            return '''<script>alert("Email already exist");window.location="/#about"</script>'''
+        else:
+            qry = "insert into login values(null,%s,%s,'user')"
+            val = (uname,pswd)
+            id = iud(qry,val)
+            qry = "INSERT INTO `user` VALUES(NULL,%s,%s,%s,%s,%s)"
+            val = (id, name, address, email, contact)
+            iud(qry,val)
+
+            return '''<script>alert("Registration success");window.location="/#about"</script>'''
+    except Exception as e:
+        print(e)
+        return '''<script>alert("Username already exist");window.location="/#about"</script>'''
+
+
+
+
+
+def view_history(reg_no):
+
+
+    try:
+        print("Loading contract ABI...")
+        with open(r"D:\blockchain\node_modules\.bin\build\contracts\VehicleHistory.json") as file:
+            contract_json = json.load(file)
+            contract_abi = contract_json['abi']
+
+        contract = web3.eth.contract(address='0x32184435B76004211EA806A324945C2aC39Da478', abi=contract_abi)
+        blocknumber = web3.eth.get_block_number()
+        mdata = []
+
+        print("Current Block Number:", blocknumber)
+
+        for i in range(blocknumber, 3, -1):
+            print(f"Processing Block {i}...")
+
+            try:
+                a = web3.eth.get_transaction_by_block(i, 0)
+                decoded_input = contract.decode_function_input(a['input'])
+
+                # if decoded_input[1]['bid'].split("#")[1] == event_name:
+
+                if decoded_input[1]['reg_no'] == reg_no:
+                    data = {
+                        'details': str(decoded_input[1]['details']),
+                        'cost': str(decoded_input[1]['cost']),
+                        'date': str(decoded_input[1]['date']),
+                    }
+                    mdata.append(data)
+                    print(f"Updated data list: {mdata}")
+
+            except Exception as e:
+                print(f"Error Processing Block {i}: {e}")
+                pass
+
+    except Exception as e:
+        print(f"Error with contract ABI or interaction: {e}")
+
+    print("Final Collected Data:", mdata)
+
+    return mdata  # Return data as a normal list, not as JSON
+
+
+@app.route("/user_view_history", methods=['post'])
+def user_view_history():
+    reg_no = request.form['regno']
+    print(reg_no)
+    res = view_history(reg_no)
+
+    return jsonify(res)
+
+
+@app.route("/view_nearest_service_center", methods=['post'])
+def view_nearest_service_center():
+    lati = request.form['lati']
+    longi = request.form['longi']
+    print(request.form)
+
+    qry = "SELECT `service_center`.*, (3959 * ACOS ( COS ( RADIANS(%s) ) * COS( RADIANS( `service_center`.lati) ) * COS( RADIANS( `service_center`.longi ) - RADIANS(%s) ) + SIN ( RADIANS(%s) ) * SIN( RADIANS( `service_center`.lati ) ))) AS user_distance FROM `service_center` HAVING user_distance < 31.068"
+    res = selectall2(qry, (lati, longi, lati))
+    print(res)
+
+    return jsonify(res)
+
+
+
 app.run(host="0.0.0.0", port="5000")

@@ -81,6 +81,8 @@ def service_center_register_code():
         contact = request.form['textfield6']
         uname = request.form['textfield7']
         pswd = request.form['textfield8']
+        lati = request.form['lati']
+        longi = request.form['longi']
 
         qry = "select * from service_center where email=%s"
         res = selectone(qry,email)
@@ -91,8 +93,8 @@ def service_center_register_code():
             qry = "insert into login values(null,%s,%s,'pending')"
             val = (uname,pswd)
             id = iud(qry,val)
-            qry = "INSERT INTO `service_center` VALUES(NULL,%s,%s,%s,%s,%s)"
-            val = (id,name,address,email,contact)
+            qry = "INSERT INTO `service_center` VALUES(NULL,%s,%s,%s,%s,%s,%s,%s)"
+            val = (id,name,address,email,contact,lati, longi)
             iud(qry,val)
 
             return '''<script>alert("Registration success");window.location="/#about"</script>'''
@@ -234,6 +236,14 @@ def add_service_history():
 
         reg_no = res['vehicle_reg_no']
 
+        from datetime import datetime
+
+        # Get current date
+        current_date = datetime.today().strftime('%Y-%m-%d')  # Format: YYYY-MM-DD
+
+        # Store in a string
+        date_string = str(current_date)
+
 
 
 
@@ -247,7 +257,7 @@ def add_service_history():
 
             blocknumber = web3.eth.get_block_number()
             message2 = contract.functions.add_history(blocknumber + 1, str(reg_no), details,
-                                                 cost, "12"
+                                                 cost, date_string
                                                  ).transact({'from': web3.eth.accounts[0]})
 
             print(message2)
