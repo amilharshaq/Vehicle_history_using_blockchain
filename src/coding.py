@@ -59,9 +59,6 @@ def login_code():
     elif res['type'] == "service":
         session['lid'] = res['id']
         return '''<script>alert("Welcome");window.location="/service_home"</script>'''
-    elif res['type'] == "user":
-        session['lid'] = res['id']
-        return '''<script>alert("Welcome");window.location="/user_home"</script>'''
     else:
         return '''<script>alert("Invalid username or password");window.location="/"</script>'''
 
