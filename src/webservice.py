@@ -39,27 +39,27 @@ def login():
 
 
 
-@app.route('/user_register_code', methods=['post'])
-def user_register_code():
+@app.route('/user_register', methods=['post'])
+def user_register():
 
     try:
 
         print(request.form)
 
-        name = request.form['textfield']
-        address = request.form['textfield2']
+        name = request.form['name']
+        address = request.form['address']
 
-        email = request.form['textfield5']
-        contact = request.form['textfield6']
+        email = request.form['email']
+        contact = request.form['contact']
 
-        uname = request.form['textfield7']
-        pswd = request.form['textfield8']
+        uname = request.form['uname']
+        pswd = request.form['pswd']
 
         qry = "select * from user where email=%s"
         res = selectone(qry, email)
 
         if res is not None:
-            return '''<script>alert("Email already exist");window.location="/#about"</script>'''
+            return jsonify({"task":"failed"})
         else:
             qry = "insert into login values(null,%s,%s,'user')"
             val = (uname,pswd)
@@ -68,13 +68,11 @@ def user_register_code():
             val = (id, name, address, email, contact)
             iud(qry,val)
 
-            return '''<script>alert("Registration success");window.location="/#about"</script>'''
+            return jsonify({"task":"success"})
+
     except Exception as e:
         print(e)
-        return '''<script>alert("Username already exist");window.location="/#about"</script>'''
-
-
-
+        return jsonify({"task": "failed"})
 
 
 def view_history(reg_no):
@@ -143,6 +141,20 @@ def view_nearest_service_center():
 
     return jsonify(res)
 
+@app.route("/book_service_center", methods=['post'])
+def book_service_center():
+    regno = request.form['regno']
+    details = request.form['details']
+    date = request.form['date']
+    vehicle_type = request.form['vehicle_type']
+    service_type = request.form['service_type']
+    lid = request.form['lid']
+    sid = request.form['sid']
+
+    qry = "INSERT INTO `booking` VALUES(NULL, %s, %s, %s, %s, %s, %s, %s, 'pending')"
+    iud(qry, (lid, sid, regno, service_type, details, vehicle_type, date))
+
+    return jsonify({"task":"valid"})
 
 
 app.run(host="0.0.0.0", port="5000")
