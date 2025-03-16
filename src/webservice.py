@@ -157,4 +157,13 @@ def book_service_center():
     return jsonify({"task":"valid"})
 
 
+@app.route("/view_bookings", methods=['post'])
+def view_bookings():
+    lid = request.form['lid']
+    qry = 'SELECT `service_center`.name, `booking`.* FROM `booking` JOIN `service_center` ON `booking`.sid=`service_center`.lid WHERE `booking`.lid=%s'
+    res = selectall2(qry, lid)
+
+    return jsonify(res)
+
+
 app.run(host="0.0.0.0", port="5000")
