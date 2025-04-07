@@ -6,6 +6,9 @@ import functools
 
 from web3 import Web3, HTTPProvider
 
+from flask_mail import *
+from email import encoders
+
 # truffle development blockchain address
 blockchain_address = 'http://127.0.0.1:7545'
 # Client instance to interact with the blockchain
@@ -22,6 +25,13 @@ app = Flask(__name__)
 
 app.secret_key = "87497823"
 
+
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'vehiclehistory263@gmail.com'
+app.config['MAIL_PASSWORD'] = 'bwgr pmdu pazy widq'
 
 @app.route('/')
 def login():
@@ -185,9 +195,92 @@ def view_service_history():
 @app.route("/view_history2", methods=['post'])
 def view_history2():
     reg_no = request.form['textfield']
-    qry = "SELECT `user`.name, `booking`.`vehicle_reg_no`,`service_type`,`vehicle_type`, `service_history`.* FROM `service_history` JOIN `booking` ON `service_history`.bid=`booking`.id JOIN `user`ON `booking`.lid=`user`.lid WHERE `booking`.`vehicle_reg_no`=%s"
-    res = selectone(qry, reg_no)
+
+
+    res = view_history(reg_no)
+
     return render_template("admin/view_history.html", val=res)
+
+
+@app.route("/view_report")
+def view_report():
+    qry = "SELECT `service_center`.name as sname, `user`.name as uname, `report`.* FROM `report` JOIN `service_center` ON `report`.sid=`service_center`.lid JOIN `user` ON `report`.uid=`user`.lid WHERE `report`.status='pending'"
+    res = selectall(qry)
+
+    return render_template("admin/viewreport.html", val = res)
+
+
+@app.route("/take_action")
+def take_action():
+    id = request.args.get('id')
+    session['rep_id'] = id
+
+    return render_template("admin/take_action.html")
+
+
+
+
+@app.route("/submit_action", methods=['post'])
+def submit_action():
+    action = request.form['action']
+    remarks = request.form['remarks']
+
+    qry= "SELECT * FROM `report` WHERE id=%s"
+    report = selectone(qry, session['rep_id'])
+
+    qry = "SELECT email FROM `user` WHERE lid=%s"
+    user_email = selectone(qry, report['uid'])
+
+    qry = "SELECT email FROM `service_center` WHERE lid = %s"
+    seller_email = selectone(qry, report['sid'])
+
+
+    def mail(email, subject):
+        try:
+            gmail = smtplib.SMTP('smtp.gmail.com', 587)
+            gmail.ehlo()                                #establishing the smtp connection
+            gmail.starttls()                            #start tls encryption
+            gmail.login('vehiclehistory263@gmail.com', 'bwgr pmdu pazy widq')
+        except Exception as e:
+            print("Couldn't setup email!!" + str(e))
+        msg = MIMEText(remarks)                 #creates an email body
+        print(msg)
+        msg['Subject'] = subject
+        msg['To'] = email
+        msg['From'] = 'vehiclehistory263@gmail.com'
+        try:
+            gmail.send_message(msg)
+            print("sendddd")
+        except Exception as e:
+            print("COULDN'T SEND EMAIL", str(e))
+        return '''<script>alert("Success");window.location="/view_report"</script>'''
+
+    if action == "warning":
+        qry = "UPDATE `report` SET status='warned seller' WHERE id=%s"
+        iud(qry, session['rep_id'])
+
+        mail(seller_email['email'], "Scam report recieved ")
+        mail(user_email['email'], "Copy of action of your report")
+        return '''<script>alert("Success");window.location="/view_report"</script>'''
+
+    elif action == "ban":
+        qry = "UPDATE `report` SET status='service center banned' WHERE id=%s"
+        iud(qry, session['rep_id'])
+
+        mail(seller_email['email'], "Your account has been banned")
+        mail(user_email['email'], "Thanks for your report.")
+
+        qry = "UPDATE `login` SET TYPE='banned' WHERE id=%s"
+        iud(qry, seller_email['lid'])
+        return '''<script>alert("Success");window.location="/view_report"</script>'''
+
+    else:
+        mail(user_email['email'], "Report Ignored")
+        return '''<script>alert("Success");window.location="/view_report"</script>'''
+
+
+    return '''<script>alert("Success");window.location="/view_report"</script>'''
+
 
 
 @app.route("/service_home")

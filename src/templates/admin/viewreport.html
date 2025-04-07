@@ -1,0 +1,36 @@
+{% extends "Admin/admin_index.html" %}
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Reports</title>
+</head>
+<body>
+<h2>Pending Reports</h2>
+<table class="table table-hover table-striped" border="1">
+    <thead>
+        <tr>
+            <th>Service Center</th>
+            <th>User</th>
+            <th>Report</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in val %}
+        <tr>
+            <td>{{ i['sname'] }}</td>
+            <td>{{ i['uname'] }}</td>
+            <td>{{ i['details'] }}</td>
+            <td>{{ i['date'] }}</td>
+            <td>{{ i['status'] }}</td>
+            <td>
+                <a href="/take_action?id={{ i['id'] }}" class="btn btn-primary btn-sm">Take Action</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+{% endblock %}
