@@ -14,7 +14,7 @@ web3 = Web3(HTTPProvider(blockchain_address,{"timeout": 800}))
 web3.eth.defaultAccount = web3.eth.accounts[0]
 compiled_contract_path = r"D:\blockchain\node_modules\.bin\build\contracts\VehicleHistory.json"
 # Deployed contract address (see `migrate` command output: `contract address`)
-deployed_contract_address = '0x7AA40c3b8d9EafC771a0870D933C56a360C593d9'
+deployed_contract_address = '0xc7D3ffd844d9e59B0eB89E44972f979c2B888cC6'
 
 
 
@@ -231,10 +231,11 @@ def add_service_history():
         details = request.form['details']
         cost = request.form['cost']
 
-        qry = "SELECT `vehicle_reg_no` FROM `booking` WHERE `id`=%s"
+        qry = "SELECT `vehicle_reg_no`, `vehicle_type` FROM `booking` WHERE `id`=%s"
         res = selectone(qry, booking_id)
 
         reg_no = res['vehicle_reg_no']
+        veh_type = res['vehicle_type']
 
         from datetime import datetime
 
@@ -243,6 +244,8 @@ def add_service_history():
 
         # Store in a string
         date_string = str(current_date)
+
+        sid = str(session['lid'])
 
 
 
@@ -256,8 +259,8 @@ def add_service_history():
         try:
 
             blocknumber = web3.eth.get_block_number()
-            message2 = contract.functions.add_history(blocknumber + 1, str(reg_no), details,
-                                                 cost, date_string
+            message2 = contract.functions.add_history(blocknumber + 1, str(reg_no), str(veh_type), details,
+                                                 cost, sid ,date_string
                                                  ).transact({'from': web3.eth.accounts[0]})
 
             print(message2)
@@ -277,7 +280,7 @@ def add_service_history():
         return redirect("/add_service_history")
 
     # Fetch booking details for the logged-in service center
-    qry = "SELECT `user`.name, `booking`.* FROM `booking` JOIN `user` ON `booking`.lid=`user`.lid WHERE booking.sid=%s"
+    qry = "SELECT `user`.name, `booking`.* FROM `booking` JOIN `user` ON `booking`.lid=`user`.lid WHERE booking.sid=%s and status='accepted'"
     bookings = selectall2(qry, session['lid'])
 
     return render_template("service_center/add_service_history.html", bookings=bookings)
@@ -301,7 +304,7 @@ def view_history(reg_no):
             contract_json = json.load(file)
             contract_abi = contract_json['abi']
 
-        contract = web3.eth.contract(address='0x7AA40c3b8d9EafC771a0870D933C56a360C593d9s', abi=contract_abi)
+        contract = web3.eth.contract(address='0xc7D3ffd844d9e59B0eB89E44972f979c2B888cC6', abi=contract_abi)
         blocknumber = web3.eth.get_block_number()
         mdata = []
 

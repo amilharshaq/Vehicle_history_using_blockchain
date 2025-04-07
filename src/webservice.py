@@ -14,7 +14,7 @@ web3 = Web3(HTTPProvider(blockchain_address,{"timeout": 800}))
 web3.eth.defaultAccount = web3.eth.accounts[0]
 compiled_contract_path = r"D:\blockchain\node_modules\.bin\build\contracts\VehicleHistory.json"
 # Deployed contract address (see `migrate` command output: `contract address`)
-deployed_contract_address = '0x7AA40c3b8d9EafC771a0870D933C56a360C593d9'
+deployed_contract_address = '0xc7D3ffd844d9e59B0eB89E44972f979c2B888cC6'
 
 
 
@@ -84,7 +84,7 @@ def view_history(reg_no):
             contract_json = json.load(file)
             contract_abi = contract_json['abi']
 
-        contract = web3.eth.contract(address='0x7AA40c3b8d9EafC771a0870D933C56a360C593d9', abi=contract_abi)
+        contract = web3.eth.contract(address='0xc7D3ffd844d9e59B0eB89E44972f979c2B888cC6', abi=contract_abi)
         blocknumber = web3.eth.get_block_number()
         mdata = []
 
@@ -104,6 +104,8 @@ def view_history(reg_no):
                         'details': str(decoded_input[1]['details']),
                         'cost': str(decoded_input[1]['cost']),
                         'date': str(decoded_input[1]['date']),
+                        'vtype': str(decoded_input[1]['veh_type']),
+                        'sid': str(decoded_input[1]['sid'])
                     }
                     mdata.append(data)
                     print(f"Updated data list: {mdata}")
@@ -174,6 +176,27 @@ def report():
     sid = request.form['sid']
     reg = request.form['regno']
     details = request.form['details']
+
+    qry = "INSERT INTO `report` VALUES(NULL, %s, %s, %s, %s, CURDATE(), 'pending')"
+    iud(qry, (lid, sid, reg,details))
+
+    return jsonify({"task":"success"})
+
+
+@app.route("/service_center_details", methods=['post'])
+def service_center_details():
+    sid = request.form['sid']
+    qry = "SELECT * FROM `service_center` WHERE lid = %s"
+    res = selectall2(qry, sid)
+
+    return jsonify(res)
+
+
+@app.route("/cancel_booking", methods=['post'])
+def cancel_booking():
+    bid = request.form['bid']
+    qry = "UPDATE `booking` SET STATUS='canceled' WHERE id=%s"
+    iud(qry, bid)
 
     return jsonify({"task":"success"})
 
