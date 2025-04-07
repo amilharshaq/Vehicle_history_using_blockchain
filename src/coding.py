@@ -14,7 +14,7 @@ web3 = Web3(HTTPProvider(blockchain_address,{"timeout": 800}))
 web3.eth.defaultAccount = web3.eth.accounts[0]
 compiled_contract_path = r"D:\blockchain\node_modules\.bin\build\contracts\VehicleHistory.json"
 # Deployed contract address (see `migrate` command output: `contract address`)
-deployed_contract_address = '0x32184435B76004211EA806A324945C2aC39Da478'
+deployed_contract_address = '0x7AA40c3b8d9EafC771a0870D933C56a360C593d9'
 
 
 
@@ -301,7 +301,7 @@ def view_history(reg_no):
             contract_json = json.load(file)
             contract_abi = contract_json['abi']
 
-        contract = web3.eth.contract(address='0x32184435B76004211EA806A324945C2aC39Da478', abi=contract_abi)
+        contract = web3.eth.contract(address='0x7AA40c3b8d9EafC771a0870D933C56a360C593d9s', abi=contract_abi)
         blocknumber = web3.eth.get_block_number()
         mdata = []
 

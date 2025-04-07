@@ -64,8 +64,8 @@
                     <td>{{ i['vehicle_reg_no'] }}</td>
                     <td>{{ i['date'] }}</td>
                     <td>
-                        <a href="accept_booking?id={{i['lid']}}" class="btn btn-accept">Accept</a>
-                        <a href="reject_booking?id={{i['lid']}}" class="btn btn-reject">Reject</a>
+                        <a href="accept_booking?id={{i['id']}}" class="btn btn-accept">Accept</a>
+                        <a href="reject_booking?id={{i['id']}}" class="btn btn-reject">Reject</a>
                     </td>
                 </tr>
                 {% endfor %}
